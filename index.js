@@ -116,7 +116,7 @@ app.delete('/blog-api/remover-comentario/:id', jsonParser, (req,res)=>{
     return res.status(200).send();
 });
 
-// 7 PUT /blog-api/actualizar-comentario/:id
+// 7 e. PUT /blog-api/actualizar-comentario/:id
 app.put('/blog-api/actualizar-comentario/:id', jsonParser, (req,res)=>{
     let idCuerpo = req.body.id;
     let idParametro = req.params.id;
@@ -144,6 +144,7 @@ app.put('/blog-api/actualizar-comentario/:id', jsonParser, (req,res)=>{
     }
 
     let foundComment = false;
+    let comentarioActualizado;
 
     comentarios.forEach((comentario) => {
         if (comentario.id.toString() === idParametro) {
@@ -160,6 +161,8 @@ app.put('/blog-api/actualizar-comentario/:id', jsonParser, (req,res)=>{
             if (autor !== undefined) {
                 comentario.autor = autor;
             }
+
+            comentarioActualizado = comentario;
         }
     });
 
@@ -168,10 +171,8 @@ app.put('/blog-api/actualizar-comentario/:id', jsonParser, (req,res)=>{
 
         return res.status(404).send();
     }
-    
-    res.statusMessage = 'El comentario con el id ingresado ha sido actualizado.';
 
-    return res.status(202).send();
+    return res.status(202).send(comentarioActualizado);
 });
 
 app.listen(8080, function(){
