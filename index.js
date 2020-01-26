@@ -175,6 +175,6 @@ app.put('/blog-api/actualizar-comentario/:id', jsonParser, (req,res)=>{
     return res.status(202).send(comentarioActualizado);
 });
 
-app.listen(8080, function(){
-    console.log("La aplicación está corriendo en el puerto 8080.");
+app.listen(8080, () => {
+    console.log('El servidor está corriendo en el puerto 8080.');
 })
