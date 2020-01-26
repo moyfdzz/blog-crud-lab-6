@@ -16,31 +16,6 @@ function fetchComments() {
     });
 }
 
-// 9 e. Desplegar comentarios por autor.
-function fetchCommentsByAuthor(author) {
-    let url = `/blog-api/comentarios-por-autor?autor=${author}`;
-
-    $.ajax({
-        url: url,
-        method: "GET",
-        dataType: "json",
-        success: function(responseJSON) {
-            console.log(responseJSON);
-            displayComments(responseJSON);
-        },
-        error: function(err) {
-            if (err.status === 404) {
-                alert('No se encontraron autores con el nombre ingresado.');
-            }
-            else {
-                alert('Hubo un error al tratar de buscar comentarios del autor ingresado.');
-            }
-            
-            console.log(err);
-        }
-    });
-}
-
 // 9 b. Agregar un nuevo comentario.
 function postComment(newComment) {
     let url = '/blog-api/nuevo-comentario';
@@ -121,30 +96,51 @@ function deleteComment(id) {
     });
 }
 
+// 9 e. Desplegar comentarios por autor.
+function fetchCommentsByAuthor(author) {
+    let url = `/blog-api/comentarios-por-autor?autor=${author}`;
+
+    $.ajax({
+        url: url,
+        method: "GET",
+        dataType: "json",
+        success: function(responseJSON) {
+            console.log(responseJSON);
+            displayComments(responseJSON);
+        },
+        error: function(err) {
+            if (err.status === 404) {
+                alert('No se encontraron autores con el nombre ingresado.');
+            }
+            else {
+                alert('Hubo un error al tratar de buscar comentarios del autor ingresado.');
+            }
+            
+            console.log(err);
+        }
+    });
+}
+
 // Desplegar los comentarios (Input: 9a y 9e).
 function displayComments(responseJSON) {
-    let comments = responseJSON;
-
     $('#commentsList').empty();
 
-    comments.forEach((comment) => {
-        $('#comentariosContainer').append(`
-            <div class="commentPostContainer">
-                <div class="commentPost">
-                    <div>
-                        <h2>${comment.titulo}</h2>
-                        <h4>By ${comment.autor}</h4>
-                        <p>${comment.contenido}</p>
-                        <p><i>${new Date(comment.fecha)}</i></p>
-                    </div>
-                    <div>
-                        <button value=${comment.id} class="editButton">Editar</button>
-                        <button value=${comment.id} class="deleteButton">Borrar</button>
-                    </div>
+    responseJSON.forEach((comment) => {
+        $('#commentsList').append(`
+            <div class="commentPost">
+                <div>
+                    <h2>${comment.titulo}</h2>
+                    <h4>By ${comment.autor}</h4>
+                    <p>${comment.contenido}</p>
+                    <p><i>${new Date(comment.fecha)}</i></p>
                 </div>
-                <div class="editCommentContainer">
-                
+                <div>
+                    <button value=${comment.id} class="editButton">Editar</button>
+                    <button value=${comment.id} class="deleteButton">Borrar</button>
                 </div>
+            </div>
+            <div class="editCommentContainer">
+    
             </div>
         `);
     });
@@ -172,7 +168,7 @@ function watchForms() {
         contenido = $('#content').val();
 
         if (titulo === '' || autor === '' || contenido === '') {
-            alert('Por favor de ingresar toda la información.');
+            alert('Por favor ingrese toda la información.');
 
             return;
         }
@@ -190,7 +186,7 @@ function watchForms() {
         postComment(newComment);
     });
 
-    $('#commentsList').on('submit', function(event) {
+    $('#commentsList').on('submit', '.editComment', function(event) {
         event.preventDefault();
 
         let titulo = $('#titleEdit').val();
@@ -249,7 +245,7 @@ function buttons() {
 
     $('#commentsList').on('click', '.deleteButton', function(event) {
         let id = $(this).val();
-        
+
         deleteComment(id);
     });
 }
